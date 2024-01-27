@@ -1,7 +1,9 @@
 # فعال سازی 6to4 tunnel IPV6 Local 
 
-
-
+> Disclaimer: This project is only for personal learning and communication, please do not use it for illegal purposes, please do not use it in a production environment
+> 
+>این پروژه فقط برای یادگیری و ارتباط شخصی است، لطفا از آن برای مقاصد غیرقانونی استفاده نکنید.
+> 
 **Step 1:** 
 
 ابتدا در سرور ایران باید این دستورات رو وارد کنیم تا تانل 6to4 در سرور ایران ، برقرار شود .
@@ -104,7 +106,7 @@ ping 192.168.13.2
 ping 192.168.13.1
 ```
 **تا اینجای کار تانل 6to4 برقرار شده و با استفاده از GOST یا IP forward ترافیک رو به سمت تانلی که ساختیم میفرستیم :**
-# فوروارد کردن ترافیک با GOST : 
+# فوروارد کردن ترافیک با GOST : (در سرور ایران)
 **Step 1:**
 
 در این مرحله با دستور زیر GOST رو نصب کنیم : 
@@ -132,4 +134,45 @@ ExecStart=/usr/local/bin/gost -L=tcp://:443/192.168.13.2:443 -L=tcp://:80/192.16
 
 [Install]
 WantedBy=multi-user.target
+```
+# فوروارد کردن ترافیک با IP forward :  (در سرور ایران)
+```shell
+sysctl net.ipv6.conf.all.forwarding=1
+ip6tables -t nat -A PREROUTING -p tcp --dport 22 -j DNAT --to-destination fc01::1
+ip6tables -t nat -A PREROUTING -j DNAT --to-destination fc01::2
+ip6tables -t nat -A POSTROUTING -j MASQUERADE -o eth0
+```
+
+
+
+
+# نکنه :
+بعد از ریبوت شدن سرور دستورات پاک میشوند ، در صورت نیاز مینوانید یک فایل ایجاد کنید و دستورات رو در داخل آن قرار دهید : 
+
+به عنوان مثال در سرور ایران : 
+```shell
+sudo nano /etc/rc.local
+
+
+#! /bin/bash
+ip tunnel add 6to4_To_KH mode sit remote IPv4-Kharej local IPv4-Iran
+ip -6 addr add fc00::1/64 dev 6to4_To_KH
+ip link set 6to4_To_KH mtu 1480
+ip link set 6to4_To_KH up
+
+ip -6 tunnel add ipip6Tun_To_KH mode ipip6 remote fc00::2 local fc00::1
+ip addr add 192.168.13.1/30 dev ipip6Tun_To_KH
+ip link set ipip6Tun_To_KH mtu 1440
+ip link set ipip6Tun_To_KH up
+
+sysctl net.ipv6.conf.all.forwarding=1
+ip6tables -t nat -A PREROUTING -p tcp --dport 22 -j DNAT --to-destination fc01::1
+ip6tables -t nat -A PREROUTING -j DNAT --to-destination fc01::2
+ip6tables -t nat -A POSTROUTING -j MASQUERADE -o eth0
+
+exit 0
+
+
+sudo chmod +x /etc/rc.local
+
 ```
