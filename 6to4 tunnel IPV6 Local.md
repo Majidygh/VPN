@@ -143,6 +143,19 @@ ExecStart=/usr/local/bin/gost -L=tcp://:443/192.168.13.2:443 -L=tcp://:80/192.16
 [Install]
 WantedBy=multi-user.target
 ```
+
+اجرا کردن تانل GOST:
+
+```shell
+systemctl daemon-reload
+systemctl enable gost
+systemctl start gost
+systemctl status gost
+```
+
+>درصورتی که تانل درست اجرا شود پیام active (running) به رنگ سبز به شما نمایش داده میشود .
+
+
 # فوروارد کردن ترافیک با IP forward :  (در سرور ایران)
 ```shell
 sysctl net.ipv6.conf.all.forwarding=1
@@ -184,3 +197,4 @@ exit 0
 sudo chmod +x /etc/rc.local
 
 ```
+
