@@ -3,7 +3,7 @@
 > Disclaimer: This project is only for personal learning and communication, please do not use it for illegal purposes, please do not use it in a production environment
 > 
 >این پروژه فقط برای یادگیری و ارتباط شخصی است، لطفا از آن برای مقاصد غیرقانونی استفاده نکنید.
-> 
+
 **Step 1:** 
 
 ابتدا در سرور ایران باید این دستورات رو وارد کنیم تا تانل 6to4 در سرور ایران ، برقرار شود .
