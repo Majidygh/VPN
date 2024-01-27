@@ -86,14 +86,14 @@ ip link set GRE6Tun_To_KH up
 
 ## IPIPv6 :
 ```shell
-ip -6 tunnel add ipip6Tun_To_IR mode ipip6 remote fc00::2 local fc00::1
+ip -6 tunnel add ipip6Tun_To_IR mode ipip6 remote fc00::1 local fc00::2
 ip addr add 192.168.13.2/30 dev ipip6Tun_To_IR
 ip link set ipip6Tun_To_IR mtu 1440
 ip link set ipip6Tun_To_IR up
 ```
 ## GRE6:
 ```shell
-ip -6 tunnel add GRE6Tun_To_IR mode ip6gre remote fc00::2 local fc00::1
+ip -6 tunnel add GRE6Tun_To_IR mode ip6gre remote fc00::1 local fc00::2
 ip addr add 192.168.13.2/30 dev GRE6Tun_To_IR
 ip link set GRE6Tun_To_IR mtu 1436
 ip link set GRE6Tun_To_IR up
