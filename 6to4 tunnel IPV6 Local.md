@@ -159,7 +159,7 @@ systemctl status gost
 # فوروارد کردن ترافیک با IP forward :  (در سرور ایران)
 ```shell
 sysctl net.ipv4.ip_forward=1
-iptables -t nat -A PREROUTING -p tcp --dport 8584 -j DNAT --to-destination 192.168.13.1
+iptables -t nat -A PREROUTING -p tcp --dport 22 -j DNAT --to-destination 192.168.13.1
 iptables -t nat -A PREROUTING -j DNAT --to-destination 192.168.13.2
 iptables -t nat -A POSTROUTING -j MASQUERADE 
 ```
