@@ -1,4 +1,4 @@
-# فعال سازی 6to4 tunnel IPV6 Local 
+# فعال سازی 6to4 tunnel IPV6 Local بدون نیاز به IPv6 
 
 > Disclaimer: This project is only for personal learning and communication, please do not use it for illegal purposes, please do not use it in a production environment
 > 
