@@ -113,48 +113,7 @@ ping 192.168.13.2
 ```shell
 ping 192.168.13.1
 ```
-**تا اینجای کار تانل 6to4 برقرار شده و با استفاده از GOST یا IP forward ترافیک رو به سمت تانلی که ساختیم میفرستیم :**
-# فوروارد کردن ترافیک با GOST : (در سرور ایران)
-**Step 1:**
-
-در این مرحله با دستور زیر GOST رو نصب کنیم : 
-```shell
-sudo apt install wget nano -y && wget https://github.com/ginuerzh/gost/releases/download/v2.11.5/gost-linux-amd64-2.11.5.gz && gunzip gost-linux-amd64-2.11.5.gz
-sudo mv gost-linux-amd64-2.11.5 /usr/local/bin/gost && sudo chmod +x /usr/local/bin/gost
-```
-یک فایل میسازیم تا دستورات GOST رو در آن وارد کنیم : 
-```shell
-nano /usr/lib/systemd/system/gost.service
-```
-
-دستورات زیر رو در فایل قرار میدهیم و آن را سیو میکنیم : 
-> به جای پورت 443 و 80 که در فایل نوشته شده است هر پورت دلخواهی که روی پنل و یا کانفیگ ها دارید رو میتونید قرار بدید .
-> آیپی استفاده شده در فایل زیر ، همان ایپی V4 لوکال سرور خارج هست که توسط تانل IPIPv6 یا GRE6 ایجاد شده هست.
-```shell
-[Unit]
-Description=GO Simple Tunnel
-After=network.target
-Wants=network.target
-
-[Service]
-Type=simple
-ExecStart=/usr/local/bin/gost -L=tcp://:443/192.168.13.2:443 -L=tcp://:80/192.168.13.2:80
-
-[Install]
-WantedBy=multi-user.target
-```
-
-اجرا کردن تانل GOST:
-
-```shell
-systemctl daemon-reload
-systemctl enable gost
-systemctl start gost
-systemctl status gost
-```
-
->درصورتی که تانل درست اجرا شود پیام active (running) به رنگ سبز به شما نمایش داده میشود .
-
+**تا اینجای کار تانل 6to4 برقرار شده و با استفاده از IP forward ترافیک رو به سمت تانلی که ساختیم میفرستیم :**
 
 # فوروارد کردن ترافیک با IP forward :  (در سرور ایران)
 ```shell
@@ -170,7 +129,7 @@ iptables -t nat -A POSTROUTING -j MASQUERADE
 # نکنه :
 بعد از ریبوت شدن سرور دستورات پاک میشوند ، در صورت نیاز مینوانید یک فایل ایجاد کنید و دستورات رو در داخل آن قرار دهید : 
 
-**1. سرور ایران (درصورتی که از IP forward استفاده کنید) :**
+**1. سرور ایران :**
 
 - با دستور زیر فایل rc.local رو باز میکنیم 
 ```shell
@@ -204,29 +163,7 @@ sudo chmod +x /etc/rc.local
 
 ```
 
-**1. سرور ایران (درصورتی که از GOST استفاده کنید) :**
 
-- با دستور زیر فایل rc.local رو باز میکنیم 
-```shell
-sudo nano /etc/rc.local
-```
-
-- متن زیر را در فایل قرار میدیم و فایل رو ذخیره میکنیم : 
-```shell
-#! /bin/bash
-ip tunnel add 6to4_To_KH mode sit remote IPv4-Kharej local IPv4-Iran
-ip -6 addr add fc00::1/64 dev 6to4_To_KH
-ip link set 6to4_To_KH mtu 1480
-ip link set 6to4_To_KH up
-
-ip -6 tunnel add ipip6Tun_To_KH mode ipip6 remote fc00::2 local fc00::1
-ip addr add 192.168.13.1/30 dev ipip6Tun_To_KH
-ip link set ipip6Tun_To_KH mtu 1440
-ip link set ipip6Tun_To_KH up
-
-
-exit 0
-```
 
 - در آخر دستور زیر رو اجرا میکنیم :
 ```shell
